@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Cart - HostelMart</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header class="main-header">
+    <div class="header-content">
+      <h1>🛒 Your Cart</h1>
+      <p class="tagline">Review before checkout</p>
+    </div>
+    <nav class="nav-buttons">
+      <a href="index.html" class="nav-btn">Home</a>
+      <a href="orders.html" class="nav-btn">Orders</a>
+    </nav>
+  </header>
+
+  <main>
+    <section class="product-section">
+      <div id="cartItems" class="product-grid"></div>
+    </section>
+    <section class="checkout-section">
+      <h2>Total: ₹<span id="cartTotal">0</span></h2>
+      <button id="placeOrderBtn">Place Order</button>
+    </section>
+  </main>
+
+  <footer>
+    <p>© 2025 HostelMart</p>
+  </footer>
+
+  <script type="module" src="firebaseConfig.js"></script>
+  <script type="module" src="script.js"></script>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+

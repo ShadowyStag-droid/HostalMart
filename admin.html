@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>HostelMart - Admin Panel</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header class="main-header">
+    <div class="header-content">
+      <h1>🛠️ Admin Panel</h1>
+      <p class="tagline">Manage Products & Orders</p>
+    </div>
+    <nav class="nav-buttons">
+      <a href="index.html" class="nav-btn">Home</a>
+      <button id="logoutBtn" class="nav-btn hidden">Logout</button>
+    </nav>
+  </header>
+
+  <!-- Admin Login Screen -->
+  <div class="login-container" id="adminLogin">
+    <h2>Admin Login</h2>
+    <input type="email" id="adminEmail" placeholder="Email" />
+    <input type="password" id="adminPassword" placeholder="Password" />
+    <button id="adminLoginBtn">Login</button>
+    <p id="loginError" style="color: red; margin-top: 10px;"></p>
+  </div>
+
+  <!-- Admin Dashboard -->
+  <main id="adminContent" class="hidden">
+    
+    <!-- Product Filters -->
+    <section class="filter-bar">
+      <input type="text" id="adminSearchInput" placeholder="Search products..." />
+      <select id="adminCategorySelect">
+        <option value="all">All</option>
+        <option value="regular">Regular</option>
+        <option value="combo">Combo</option>
+      </select>
+    </section>
+
+    <!-- Product List -->
+    <section class="product-section">
+      <h2>📋 All Products</h2>
+      <div id="adminProductList" class="product-grid"></div>
+    </section>
+
+    <!-- Order Management -->
+    <section class="product-section">
+      <h2>📦 All Orders</h2>
+      <div id="allOrders" class="product-grid"></div>
+    </section>
+
+    <!-- Add New Product -->
+    <section class="product-section">
+      <h2>➕ Add New Product</h2>
+      <form id="addProductForm" class="form-grid">
+        <input type="text" id="productName" placeholder="Product Name" required />
+        <input type="text" id="productCategory" placeholder="Category (regular/combo)" required />
+        <input type="number" id="productPrice" placeholder="Price ₹" required />
+        <input type="text" id="productImage" placeholder="Image URL" required />
+        <button type="submit">Add Product</button>
+      </form>
+    </section>
+
+  </main>
+
+  <footer>
+    <p>© 2025 HostelMart</p>
+  </footer>
+
+  <!-- Firebase + App Logic -->
+  <script type="module" src="firebaseConfig.js"></script>
+  <script type="module" src="script.js"></script>
+</body>
+</html>
+
+
+
+
+
+
+
+
+

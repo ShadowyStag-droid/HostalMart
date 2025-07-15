@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Your Cart - HostelMart</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header class="main-header">
+    <div class="header-content">
+      <h1>🛒 Your Cart</h1>
+      <p class="tagline">Review your items before checkout</p>
+    </div>
+    <nav class="nav-buttons">
+      <a href="index.html" class="nav-btn">Continue Shopping</a>
+      <a href="orders.html" class="nav-btn">My Orders</a>
+    </nav>
+  </header>
+
+  <main class="cart-items">
+    <div id="cartItems"></div>
+
+    <section class="checkout-section">
+      <h2>Checkout Details</h2>
+      <div class="user-info form-grid">
+        <input type="text" id="userName" placeholder="Your Name" required />
+        <input type="text" id="userRoom" placeholder="Room Number" required />
+        <input type="tel" id="userMobile" placeholder="Mobile Number" required />
+        <label style="display:flex; align-items:center; gap:5px;">
+          <input type="checkbox" id="rememberMe" /> Remember Me
+        </label>
+      </div>
+      <button id="placeOrderBtn" class="nav-btn" style="margin-top:10px;">Place Order</button>
+    </section>
+  </main>
+
+  <footer>
+    <p>© 2025 HostelMart</p>
+  </footer>
+
+  <script type="module">
+    import { db } from './firebaseConfig.js';
+    import { addDoc, collection } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+    const cartItemsContainer = document.getElementById("cartItems");
+    const placeOrderBtn = document.getElementById("placeOrderBtn");
+
+    function loadCart() {
+      const cart = JSON.parse(localStorage.getItem("cart") || "[]");
+      cartItemsContainer.innerHTML = "";
+      let total = 0;
+
+      if (cart.length === 0) {
+        cartItemsContainer.innerHTML = "<p>Your cart is empty.</p>";
+        placeOrderBtn.disabled = true;
+        placeOrderBtn.style.backgroundColor = "#999";
+        placeOrderBtn.style.cursor = "not-allowed";
+        return;
+      } else {
+        placeOrderBtn.disabled = false;
+        placeOrderBtn.style.backgroundColor = "";
+        placeOrderBtn.style.cursor = "pointer";
+      }
+
+      cart.forEach((item, index) => {
+        const subtotal = item.price * item.quantity;
+        total += subtotal;
+
+        const card = document.createElement("div");
+        card.className = "product-card";
+        card.innerHTML = `
+          <h3>${item.name}</h3>
+          <p>Price: ₹${item.price}</p>
+          <div style="display:flex; align-items:center; justify-content:center; gap:10px; margin: 10px 0;">
+            <button class="nav-btn" onclick="adjustQuantity(${index}, -1)">-</button>
+            <span>Qty: ${item.quantity}</span>
+            <button class="nav-btn" onclick="adjustQuantity(${index}, 1)">+</button>
+          </div>
+          <p>Subtotal: ₹${subtotal}</p>
+          <button class="nav-btn danger-btn" onclick="removeItem(${index})">Remove</button>
+        `;
+        cartItemsContainer.appendChild(card);
+      });
+
+      const totalDiv = document.createElement("div");
+      totalDiv.innerHTML = `<h2>Total: ₹${total}</h2>`;
+      cartItemsContainer.appendChild(totalDiv);
+    }
+
+    window.adjustQuantity = function(index, delta) {
+      const cart = JSON.parse(localStorage.getItem("cart") || "[]");
+      cart[index].quantity += delta;
+      if (cart[index].quantity < 1) cart[index].quantity = 1;
+      localStorage.setItem("cart", JSON.stringify(cart));
+      loadCart();
+    };
+
+    window.removeItem = function(index) {
+      const cart = JSON.parse(localStorage.getItem("cart") || "[]");
+      cart.splice(index, 1);
+      localStorage.setItem("cart", JSON.stringify(cart));
+      loadCart();
+    };
+
+    // Place order
+    placeOrderBtn.addEventListener("click", async () => {
+      const cart = JSON.parse(localStorage.getItem("cart") || "[]");
+      if (cart.length === 0) {
+        alert("Your cart is empty.");
+        return;
+      }
+
+      const name = document.getElementById("userName").value;
+      const room = document.getElementById("userRoom").value;
+      const mobile = document.getElementById("userMobile").value;
+      const remember = document.getElementById("rememberMe").checked;
+
+      if (!name || !room || !mobile) {
+        alert("Please fill all fields.");
+        return;
+      }
+
+      const total = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
+
+      await addDoc(collection(db, "orders"), {
+        name, room, mobile, cart, total,
+        status: "Pending",
+        timestamp: Date.now()
+      });
+
+      if (remember) {
+        localStorage.setItem("userInfo", JSON.stringify({ name, room, mobile }));
+      } else {
+        localStorage.removeItem("userInfo");
+      }
+
+      localStorage.removeItem("cart");
+      alert("Order placed successfully!");
+      window.location.href = "orders.html";
+    });
+
+    // Prefill remembered info
+    const userInfo = JSON.parse(localStorage.getItem("userInfo"));
+    if (userInfo) {
+      document.getElementById("userName").value = userInfo.name || "";
+      document.getElementById("userRoom").value = userInfo.room || "";
+      document.getElementById("userMobile").value = userInfo.mobile || "";
+      document.getElementById("rememberMe").checked = true;
+    }
+
+    // Load on start
+    loadCart();
+  </script>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
